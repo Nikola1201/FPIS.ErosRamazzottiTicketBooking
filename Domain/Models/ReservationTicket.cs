@@ -1,9 +1,10 @@
-﻿namespace Domain.Models;
+﻿namespace FPIS.Domain.Models;
 
 public class ReservationTicket
 {
-    public int ReservationId { get; set; }
-    public int ZoneId { get; set; }
-    public int Quantity { get; set; }
-    public decimal PricePerTicket { get; set; }
+    public Guid Id { get; set; }
+    public Guid ReservationId { get; set; }
+    public Guid ZoneId { get; set; }
+    public Zone Zone { get; set; } = default!;
+    public decimal Price { get; set; }
 }

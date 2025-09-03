@@ -5,7 +5,9 @@ VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.ErosRamazzottiTicketBooking.Api", "FPIS.ErosRamazzottiTicketBooking.Api\FPIS.ErosRamazzottiTicketBooking.Api.csproj", "{3EF10872-8E3A-4021-8D9F-B4C07AF8B9B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{ADF0346C-3E87-4034-A2D1-7C192E35B8E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Domain", "Domain\FPIS.Domain.csproj", "{ADF0346C-3E87-4034-A2D1-7C192E35B8E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Infrastructure", "Infrastructure\FPIS.Infrastructure.csproj", "{24605CBF-0580-4FB3-B012-A37495846305}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{ADF0346C-3E87-4034-A2D1-7C192E35B8E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADF0346C-3E87-4034-A2D1-7C192E35B8E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADF0346C-3E87-4034-A2D1-7C192E35B8E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24605CBF-0580-4FB3-B012-A37495846305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24605CBF-0580-4FB3-B012-A37495846305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24605CBF-0580-4FB3-B012-A37495846305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24605CBF-0580-4FB3-B012-A37495846305}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

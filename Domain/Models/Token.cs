@@ -1,8 +1,9 @@
-﻿namespace Domain.Models;
+﻿namespace FPIS.Domain.Models;
 
 public class Token
 {
-    public string Value { get; set; } = default!;
+    public Guid Id { get; set; }
+    public string Value { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public DateTime ExpiryDate { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace Domain.Models;
+﻿namespace FPIS.Domain.Models;
 
 public enum DiscountType
 {

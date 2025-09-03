@@ -1,4 +1,7 @@
 
+using FPIS.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+
 namespace FPIS.ErosRamazzottiTicketBooking.Api
 {
     public class Program
@@ -7,12 +10,17 @@ namespace FPIS.ErosRamazzottiTicketBooking.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            // Add Entity Framework Core with SQL Server
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             // Add services to the container.
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
 
             var app = builder.Build();
 
