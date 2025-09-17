@@ -1,5 +1,7 @@
 
+using FPIS.ErosRamazzottiTicketBooking.Api.Services;
 using FPIS.Infrastructure;
+using FPIS.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace FPIS.ErosRamazzottiTicketBooking.Api
@@ -20,6 +22,10 @@ namespace FPIS.ErosRamazzottiTicketBooking.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Register repositories and unit of work
+            builder.Services.AddScoped<IHomeService,HomeService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
             var app = builder.Build();
