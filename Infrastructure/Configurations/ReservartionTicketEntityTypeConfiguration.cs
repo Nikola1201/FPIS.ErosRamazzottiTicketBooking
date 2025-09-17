@@ -26,7 +26,13 @@ public class ReservartionTicketEntityTypeConfiguration : IEntityTypeConfiguratio
             .HasForeignKey(rt => rt.ZoneId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Price configuration (optional: ensure precision)
+        // Relationship to ConcertDate
+        builder.HasOne<ConcertDate>()
+            .WithMany(cd => cd.Tickets)
+            .HasForeignKey(rt => rt.ConcertDateId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Price configuration
         builder.Property(rt => rt.Price)
             .IsRequired()
             .HasPrecision(18, 2);

@@ -7,4 +7,5 @@ public class ReservationTicket
     public Guid ZoneId { get; set; }
     public Zone Zone { get; set; } = default!;
     public decimal Price { get; set; }
+    public Guid ConcertDateId { get; set; }
 }

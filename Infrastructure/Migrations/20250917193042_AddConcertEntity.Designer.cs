@@ -4,6 +4,7 @@ using FPIS.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FPIS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250917193042_AddConcertEntity")]
+    partial class AddConcertEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,17 +59,6 @@ namespace FPIS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Concerts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("d67a8082-12a4-4473-856d-b62ddcb6df88"),
-                            AdditionalInfo = "Open air concert",
-                            Address = "Piazza del Colosseo, 1",
-                            City = "Rome",
-                            Name = "Eros Ramazzotti Live",
-                            Venue = "Colosseum"
-                        });
                 });
 
             modelBuilder.Entity("FPIS.Domain.Models.ConcertDate", b =>
@@ -86,14 +78,6 @@ namespace FPIS.Infrastructure.Migrations
                     b.HasIndex("ConcertId");
 
                     b.ToTable("ConcertDates");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("f98191d0-2f69-4df5-b62b-290ff9c45ec2"),
-                            ConcertId = new Guid("d67a8082-12a4-4473-856d-b62ddcb6df88"),
-                            Date = new DateTime(2025, 11, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("FPIS.Domain.Models.Customer", b =>
@@ -302,22 +286,6 @@ namespace FPIS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Zones");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("2c776d25-1891-4430-8117-514e61ecf8af"),
-                            Capacity = 100,
-                            Name = "VIP",
-                            Price = 250.00m
-                        },
-                        new
-                        {
-                            Id = new Guid("6ffb3268-48fe-49d3-8aed-84f9d8a1458d"),
-                            Capacity = 500,
-                            Name = "Regular",
-                            Price = 100.00m
-                        });
                 });
 
             modelBuilder.Entity("FPIS.Domain.Models.ConcertDate", b =>
