@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Infrastructure", "Infr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Domain.Tests", "FPIS.Domain.Tests\FPIS.Domain.Tests.csproj", "{936C0C1E-B4B5-4D85-858D-3C0462885191}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Api.Tests", "FPIS.Api.Tests\FPIS.Api.Tests.csproj", "{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{936C0C1E-B4B5-4D85-858D-3C0462885191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{936C0C1E-B4B5-4D85-858D-3C0462885191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{936C0C1E-B4B5-4D85-858D-3C0462885191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
