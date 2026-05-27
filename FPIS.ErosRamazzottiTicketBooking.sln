@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Domain.Tests", "FPIS.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Api.Tests", "FPIS.Api.Tests\FPIS.Api.Tests.csproj", "{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPIS.Api.IntegrationTests", "FPIS.Api.IntegrationTests\FPIS.Api.IntegrationTests.csproj", "{56EAC004-F34A-47A2-8EBF-60EA2AA49BC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE17BFCB-E15F-4EE6-94CE-8CDC2BC7E14C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56EAC004-F34A-47A2-8EBF-60EA2AA49BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56EAC004-F34A-47A2-8EBF-60EA2AA49BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56EAC004-F34A-47A2-8EBF-60EA2AA49BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56EAC004-F34A-47A2-8EBF-60EA2AA49BC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
