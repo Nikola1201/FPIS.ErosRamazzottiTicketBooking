@@ -41,7 +41,7 @@ public class ConcertTests
     [InlineData("")]
     [InlineData("Standard name")]
     [InlineData("Eros Ramazzotti — Live!")]
-    [InlineData("Имена кирилицом")]
+    [InlineData("Имена ћирилицом")]
     public void Name_RoundTrip(string input)
     {
         var concert = new Concert { Name = input };

@@ -20,7 +20,7 @@ public class AccessTokenTests
     [Theory]
     [InlineData("")]
     [InlineData("abc123")]
-    [InlineData("Имена кирилицом")]
+    [InlineData("Имена ћирилицом")]
     public void Value_RoundTrip(string value) => Assert.Equal(value, new AccessToken { Value = value }.Value);
 
     [Fact]

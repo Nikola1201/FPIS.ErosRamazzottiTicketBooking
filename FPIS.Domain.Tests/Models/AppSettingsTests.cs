@@ -17,7 +17,7 @@ public class AppSettingsTests
     [Theory]
     [InlineData("MaxTickets", "10")]
     [InlineData("PromoActive", "true")]
-    [InlineData("Имена кирилицом", "значење")]
+    [InlineData("Имена ћирилицом", "значење")]
     public void KeyAndValue_RoundTrip(string key, string value)
     {
         var s = new AppSettings { Key = key, Value = value };
