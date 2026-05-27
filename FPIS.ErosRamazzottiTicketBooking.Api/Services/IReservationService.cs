@@ -1,20 +1,39 @@
-﻿using FPIS.Domain.Mappings;
+using FPIS.Domain.Mappings;
 using FPIS.Domain.Models;
 using FPIS.Domain.ViewModels;
 using FPIS.Infrastructure.Repositories;
 
 namespace FPIS.ErosRamazzottiTicketBooking.Api.Services;
 
+/// <summary>Apstrakcija za rad sa rezervacijama: prikaz stranice, kreiranje, izmena, otkazivanje i detalji.</summary>
 public interface IReservationService
 {
+    /// <summary>Vraća view model za stranicu rezervacije (koncert + zone + raspoloživi kapacitet).</summary>
+    /// <returns><see cref="Result{T}"/> sa <see cref="ReservationPageViewModel"/>.</returns>
     Task<Result<ReservationPageViewModel>> GetReservationPage();
+    /// <summary>Kreira novu rezervaciju na osnovu DTO-a.</summary>
+    /// <param name="payload">DTO sa podacima o kupcu, datumu koncerta, kartama i opcionim promo kodom.</param>
+    /// <returns><see cref="Result{T}"/> sa <see cref="ReservationResultDTO"/>.</returns>
     Task<Result<ReservationResultDTO>> CreateReservationAsync(ReservationPostDTO payload);
+    /// <summary>Menja postojeću rezervaciju (regeneriše karte i popuste).</summary>
+    /// <param name="payload">DTO sa email-om, pristupnim tokenom i novim kartama.</param>
+    /// <returns><see cref="Result{T}"/> sa <see cref="ReservationUpdateResultDTO"/>.</returns>
     Task<Result<ReservationUpdateResultDTO>> UpdateReservationAsync(ReservationUpdateDTO payload);
+    /// <summary>Otkazuje rezervaciju (sa konzistentnim ažuriranjem promo kodova i povezanih rezervacija).</summary>
+    /// <param name="reservationId">Identifikator rezervacije.</param>
+    /// <param name="customerEmail">Email kupca (autorizacija).</param>
+    /// <param name="accessToken">Pristupni token rezervacije (autorizacija).</param>
+    /// <returns><see cref="Result{T}"/> sa <see cref="ReservationCancelResultDTO"/>.</returns>
     Task <Result<ReservationCancelResultDTO>> CancelReservationAsync(Guid reservationId, string customerEmail, string accessToken);
+    /// <summary>Vraća detalje rezervacije za prikaz korisniku.</summary>
+    /// <param name="accessToken">Pristupni token rezervacije.</param>
+    /// <param name="customerEmail">Email kupca.</param>
+    /// <returns><see cref="Result{T}"/> sa <see cref="ReservationDetailsViewModel"/>.</returns>
     public Task<Result<ReservationDetailsViewModel>> GetReservationDetails(string accessToken, string customerEmail);
 
 }
 
+/// <summary>Implementacija <see cref="IReservationService"/> nad <see cref="IUnitOfWork"/> i pratećim servisima.</summary>
 public class ReservationService : IReservationService
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -25,6 +44,14 @@ public class ReservationService : IReservationService
     private readonly ITokenService _tokenService;
     private readonly IZoneService _zoneService;
 
+    /// <summary>Konstruktor sa svim potrebnim zavisnostima.</summary>
+    /// <param name="unitOfWork">Jedinica rada za pristup repozitorijumima.</param>
+    /// <param name="logger">Logger.</param>
+    /// <param name="customerService">Servis za rad sa kupcima.</param>
+    /// <param name="promoCodeService">Servis za rad sa promo kodovima.</param>
+    /// <param name="ticketService">Servis za rad sa kartama.</param>
+    /// <param name="tokenService">Servis za generisanje access tokena.</param>
+    /// <param name="zoneService">Servis za dohvatanje zona.</param>
     public ReservationService(
         IUnitOfWork unitOfWork,
         ILogger<ReservationService> logger,
@@ -43,6 +70,7 @@ public class ReservationService : IReservationService
         _zoneService = zoneService ?? throw new ArgumentNullException(nameof(zoneService));
     }
 
+    /// <inheritdoc />
     public async Task<Result<ReservationCancelResultDTO>> CancelReservationAsync(Guid reservationId, string customerEmail, string accessToken)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync();
@@ -168,6 +196,7 @@ public class ReservationService : IReservationService
         }
     }
 
+    /// <inheritdoc />
     public async Task<Result<ReservationResultDTO>> CreateReservationAsync(ReservationPostDTO payload)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync();
@@ -251,7 +280,8 @@ public class ReservationService : IReservationService
             return Result<ReservationResultDTO>.Failure("Internal server error.", 500);
         }
     }
-    
+
+    /// <inheritdoc />
     public async Task<Result<ReservationPageViewModel>> GetReservationPage()
     {
         try
@@ -285,7 +315,8 @@ public class ReservationService : IReservationService
             return Result<ReservationPageViewModel>.Failure("Internal server error.", 500);
         }
     }
-    
+
+    /// <inheritdoc />
     public async Task<Result<ReservationUpdateResultDTO>> UpdateReservationAsync(ReservationUpdateDTO payload)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync();
@@ -411,7 +442,8 @@ public class ReservationService : IReservationService
             return Result<ReservationUpdateResultDTO>.Failure("Internal server error.", 500);
         }
     }
-    
+
+    /// <inheritdoc />
     public async Task<Result<ReservationDetailsViewModel>> GetReservationDetails(string accessToken, string customerEmail)
     {
         try

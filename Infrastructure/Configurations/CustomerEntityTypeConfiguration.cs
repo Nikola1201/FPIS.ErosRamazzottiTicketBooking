@@ -1,11 +1,16 @@
-﻿using FPIS.Domain.Models;
+using FPIS.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FPIS.Infrastructure.Configurations;
 
+/// <summary>
+/// EF Core entity type konfiguracija za <see cref="Customer"/>: ograničenja dužine za sva polja i obavezna polja.
+/// </summary>
 public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer>
 {
+    /// <summary>Konfiguriše mapiranje <see cref="Customer"/> entiteta na bazu.</summary>
+    /// <param name="builder">EF Core builder za <see cref="Customer"/>.</param>
     public void Configure(EntityTypeBuilder<Customer> builder)
     {
         builder.HasKey(c => c.Id);

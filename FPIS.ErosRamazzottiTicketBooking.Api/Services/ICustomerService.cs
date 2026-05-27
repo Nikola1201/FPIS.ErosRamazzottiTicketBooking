@@ -1,23 +1,32 @@
-﻿using FPIS.Domain.Models;
+using FPIS.Domain.Models;
 using FPIS.Domain.ViewModels;
 using FPIS.Infrastructure.Repositories;
 
 namespace FPIS.ErosRamazzottiTicketBooking.Api.Services;
 
+/// <summary>Apstrakcija za rad sa kupcima (<see cref="Customer"/>).</summary>
 public interface ICustomerService
 {
+    /// <summary>Kreira novog kupca iz DTO-a; vraća null ako kupac sa istim email-om već postoji.</summary>
+    /// <param name="customer">DTO sa podacima o kupcu.</param>
+    /// <returns>Novokreirani <see cref="Customer"/> ili null.</returns>
     Customer? CreateCustomer(CustomerCreateDTO customer);
 }
 
+/// <summary>Implementacija <see cref="ICustomerService"/> nad <see cref="IUnitOfWork"/>.</summary>
 public class CustomerService : ICustomerService
 {
     private readonly ILogger<CustomerService> _logger;
     private readonly IUnitOfWork _unitOfWork;
+    /// <summary>Konstruktor sa logger-om i <see cref="IUnitOfWork"/>.</summary>
+    /// <param name="logger">Logger.</param>
+    /// <param name="unitOfWork">Jedinica rada za pristup repozitorijumima.</param>
     public CustomerService(ILogger<CustomerService> logger, IUnitOfWork unitOfWork)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
+    /// <inheritdoc />
     public Customer? CreateCustomer(CustomerCreateDTO customer)
     {
         try

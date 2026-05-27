@@ -6,8 +6,13 @@ using Microsoft.OpenApi.Models;
 
 namespace FPIS.ErosRamazzottiTicketBooking.Api
 {
+    /// <summary>
+    /// Ulazna tačka aplikacije; konfiguriše DI kontejner, middleware pipeline i pokreće web host.
+    /// </summary>
     public class Program
     {
+        /// <summary>Glavna metoda; konfiguriše i pokreće web aplikaciju.</summary>
+        /// <param name="args">Argumenti komandne linije.</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);

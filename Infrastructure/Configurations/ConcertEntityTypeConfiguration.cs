@@ -1,11 +1,16 @@
-﻿using FPIS.Domain.Models;
+using FPIS.Domain.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
 namespace FPIS.Infrastructure.Configurations;
 
+/// <summary>
+/// EF Core entity type konfiguracija za <see cref="Concert"/>: ograničenja dužine, obavezna polja i veza ka datumima.
+/// </summary>
 public class ConcertEntityTypeConfiguration : IEntityTypeConfiguration<Concert>
 {
+    /// <summary>Konfiguriše mapiranje <see cref="Concert"/> entiteta na bazu.</summary>
+    /// <param name="builder">EF Core builder za <see cref="Concert"/>.</param>
     public void Configure(EntityTypeBuilder<Concert> builder)
     {
         builder.HasKey(c => c.Id);

@@ -1,12 +1,17 @@
-﻿
+
 using FPIS.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FPIS.Infrastructure.Configurations;
 
+/// <summary>
+/// EF Core entity type konfiguracija za <see cref="ReservationTicket"/>: ključ, cena i veze ka rezervaciji, zoni i datumu koncerta.
+/// </summary>
 public class ReservartionTicketEntityTypeConfiguration : IEntityTypeConfiguration<ReservationTicket>
 {
+    /// <summary>Konfiguriše mapiranje <see cref="ReservationTicket"/> entiteta na bazu.</summary>
+    /// <param name="builder">EF Core builder za <see cref="ReservationTicket"/>.</param>
     public void Configure(EntityTypeBuilder<ReservationTicket> builder)
     {
         builder.HasKey(rt => rt.Id);
