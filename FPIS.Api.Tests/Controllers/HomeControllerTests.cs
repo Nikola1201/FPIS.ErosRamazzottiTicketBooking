@@ -31,7 +31,7 @@ public class HomeControllerTests
     }
 
     [Fact]
-    public async Task Index_404Error_ReturnsNotFound()
+    public async Task Index_404Error_ReturnsNotFoundWithProblemDetails()
     {
         var (controller, svc) = Build();
         svc.Setup(s => s.GetHomePage()).ReturnsAsync(Result<HomePageViewModel>.Failure("No concert", 404));
@@ -39,11 +39,13 @@ public class HomeControllerTests
         var result = await controller.Index();
 
         var nf = Assert.IsType<NotFoundObjectResult>(result);
-        Assert.NotNull(nf.Value);
+        var pd = Assert.IsType<ProblemDetails>(nf.Value);
+        Assert.Equal(404, pd.Status);
+        Assert.Equal("No concert", pd.Detail);
     }
 
     [Fact]
-    public async Task Index_500Error_ReturnsInternalServerError()
+    public async Task Index_500Error_ReturnsInternalServerErrorWithProblemDetails()
     {
         var (controller, svc) = Build();
         svc.Setup(s => s.GetHomePage()).ReturnsAsync(Result<HomePageViewModel>.Failure("Boom", 500));
@@ -52,6 +54,9 @@ public class HomeControllerTests
 
         var status = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, status.StatusCode);
+        var pd = Assert.IsType<ProblemDetails>(status.Value);
+        Assert.Equal(500, pd.Status);
+        Assert.Equal("Boom", pd.Detail);
     }
 
     [Fact]
@@ -64,6 +69,8 @@ public class HomeControllerTests
 
         var status = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, status.StatusCode);
+        var pd = Assert.IsType<ProblemDetails>(status.Value);
+        Assert.Equal(500, pd.Status);
     }
 
     [Fact]

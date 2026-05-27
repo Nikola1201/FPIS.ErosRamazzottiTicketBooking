@@ -10,7 +10,7 @@ public interface ICustomerService
     /// <summary>Kreira novog kupca iz DTO-a; vraća null ako kupac sa istim email-om već postoji.</summary>
     /// <param name="customer">DTO sa podacima o kupcu.</param>
     /// <returns>Novokreirani <see cref="Customer"/> ili null.</returns>
-    Customer? CreateCustomer(CustomerCreateDTO customer);
+    Task<Customer?> CreateCustomerAsync(CustomerCreateDTO customer);
 }
 
 /// <summary>Implementacija <see cref="ICustomerService"/> nad <see cref="IUnitOfWork"/>.</summary>
@@ -27,17 +27,16 @@ public class CustomerService : ICustomerService
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
     /// <inheritdoc />
-    public Customer? CreateCustomer(CustomerCreateDTO customer)
+    public async Task<Customer?> CreateCustomerAsync(CustomerCreateDTO customer)
     {
         try
         {
             var customerRepo = _unitOfWork.Repository<Customer>();
-            // Check if customer with the same email already exists
-            var existingCustomer =  customerRepo.GetAllAsync(c => c.Email == customer.Email, asNoTracking: true).Result.FirstOrDefault();
-            if (existingCustomer != null)
+            var existing = await customerRepo.GetAllAsync(c => c.Email == customer.Email, asNoTracking: true);
+            if (existing.FirstOrDefault() != null)
             {
                 _logger.LogInformation("Customer with email {Email} already exists.", customer.Email);
-                return null; // Customer already exists
+                return null;
             }
             var newCustomer = new Customer
             {
@@ -54,12 +53,12 @@ public class CustomerService : ICustomerService
                 Country = customer.Country,
                 Company = customer.Company,
             };
-            customerRepo.AddAsync(newCustomer);
+            await customerRepo.AddAsync(newCustomer);
             return newCustomer;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred in CustomerService.CreateCustomer.");
+            _logger.LogError(ex, "An error occurred in CustomerService.CreateCustomerAsync.");
             return default;
         }
 

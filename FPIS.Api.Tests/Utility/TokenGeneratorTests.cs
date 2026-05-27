@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using FPIS.ErosRamazzottiTicketBooking.Api.Utility;
 using Xunit;
 
@@ -40,9 +41,17 @@ public class TokenGeneratorTests
     }
 
     [Fact]
-    public void GenerateTokenValue_ReturnsNonNullString()
+    public void GenerateTokenValue_NegativeLength_Throws()
     {
-        var token = TokenGenerator.GenerateTokenValue();
-        Assert.NotNull(token);
+        Assert.Throws<ArgumentOutOfRangeException>(() => TokenGenerator.GenerateTokenValue(-1));
+    }
+
+    [Fact]
+    public void GenerateTokenValue_ParallelCalls_ProduceDistinctTokens()
+    {
+        var bag = new ConcurrentBag<string>();
+        Parallel.For(0, 1000, _ => bag.Add(TokenGenerator.GenerateTokenValue(16)));
+
+        Assert.Equal(1000, bag.Distinct().Count());
     }
 }

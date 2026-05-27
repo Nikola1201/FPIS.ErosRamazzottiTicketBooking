@@ -44,12 +44,14 @@ public class TokenServiceTests
     }
 
     [Fact]
-    public async Task CreateToken_ProducesDifferentTokensOnSubsequentCalls()
+    public async Task CreateToken_ProducesDifferentTokenValuesOnSubsequentCalls()
     {
         var (svc, _, _) = Build();
         var t1 = await svc.CreateToken(Guid.NewGuid());
         var t2 = await svc.CreateToken(Guid.NewGuid());
-        Assert.NotEqual(t1.Id, t2.Id);
+        Assert.NotEqual(t1.Value, t2.Value);
+        Assert.False(string.IsNullOrEmpty(t1.Value));
+        Assert.False(string.IsNullOrEmpty(t2.Value));
     }
 
     [Fact]

@@ -10,9 +10,13 @@ public static class TokenGenerator
     /// <returns>Slučajan alfanumerički string date dužine.</returns>
     public static string GenerateTokenValue(int length = 10)
     {
+        if (length < 0)
+            throw new ArgumentOutOfRangeException(nameof(length), "Length must be non-negative.");
+
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        var random = new Random();
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
+        var buffer = new char[length];
+        for (int i = 0; i < length; i++)
+            buffer[i] = chars[Random.Shared.Next(chars.Length)];
+        return new string(buffer);
     }
 }

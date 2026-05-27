@@ -45,18 +45,21 @@ public class ReservationControllerTests
     }
 
     [Fact]
-    public async Task Index_404_ReturnsNotFound()
+    public async Task Index_404_ReturnsNotFoundWithProblemDetails()
     {
         var (controller, svc) = Build();
         svc.Setup(s => s.GetReservationPage()).ReturnsAsync(Result<ReservationPageViewModel>.Failure("missing", 404));
 
         var result = await controller.Index();
 
-        Assert.IsType<NotFoundObjectResult>(result);
+        var nf = Assert.IsType<NotFoundObjectResult>(result);
+        var pd = Assert.IsType<ProblemDetails>(nf.Value);
+        Assert.Equal(404, pd.Status);
+        Assert.Equal("missing", pd.Detail);
     }
 
     [Fact]
-    public async Task Index_500_ReturnsServerError()
+    public async Task Index_500_ReturnsServerErrorWithProblemDetails()
     {
         var (controller, svc) = Build();
         svc.Setup(s => s.GetReservationPage()).ReturnsAsync(Result<ReservationPageViewModel>.Failure("boom", 500));
@@ -65,6 +68,9 @@ public class ReservationControllerTests
 
         var status = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, status.StatusCode);
+        var pd = Assert.IsType<ProblemDetails>(status.Value);
+        Assert.Equal(500, pd.Status);
+        Assert.Equal("boom", pd.Detail);
     }
 
     // ---------- POST /api/reservation ----------
@@ -103,11 +109,14 @@ public class ReservationControllerTests
 
         var result = await controller.CreateReservation(new ReservationPostDTO());
 
-        Assert.IsType<NotFoundObjectResult>(result);
+        var nf = Assert.IsType<NotFoundObjectResult>(result);
+        var pd = Assert.IsType<ProblemDetails>(nf.Value);
+        Assert.Equal(404, pd.Status);
+        Assert.Equal("missing", pd.Detail);
     }
 
     [Fact]
-    public async Task CreateReservation_500_ReturnsServerError()
+    public async Task CreateReservation_500_ReturnsServerErrorWithProblemDetails()
     {
         var (controller, svc) = Build();
         svc.Setup(s => s.CreateReservationAsync(It.IsAny<ReservationPostDTO>()))
@@ -117,6 +126,9 @@ public class ReservationControllerTests
 
         var status = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, status.StatusCode);
+        var pd = Assert.IsType<ProblemDetails>(status.Value);
+        Assert.Equal(500, pd.Status);
+        Assert.Equal("boom", pd.Detail);
     }
 
     // ---------- PUT /api/reservation ----------
@@ -155,11 +167,14 @@ public class ReservationControllerTests
 
         var result = await controller.UpdateReservation(new ReservationUpdateDTO { CustomerEmail = "x", AccessToken = "y", Tickets = [new()] });
 
-        Assert.IsType<NotFoundObjectResult>(result);
+        var nf = Assert.IsType<NotFoundObjectResult>(result);
+        var pd = Assert.IsType<ProblemDetails>(nf.Value);
+        Assert.Equal(404, pd.Status);
+        Assert.Equal("missing", pd.Detail);
     }
 
     [Fact]
-    public async Task UpdateReservation_500_ReturnsServerError()
+    public async Task UpdateReservation_500_ReturnsServerErrorWithProblemDetails()
     {
         var (controller, svc) = Build();
         svc.Setup(s => s.UpdateReservationAsync(It.IsAny<ReservationUpdateDTO>()))
@@ -169,6 +184,9 @@ public class ReservationControllerTests
 
         var status = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, status.StatusCode);
+        var pd = Assert.IsType<ProblemDetails>(status.Value);
+        Assert.Equal(500, pd.Status);
+        Assert.Equal("boom", pd.Detail);
     }
 
     // ---------- DELETE /api/reservation/{id} ----------
@@ -210,11 +228,14 @@ public class ReservationControllerTests
 
         var result = await controller.CancelReservation(id, "a@b.rs", "tok");
 
-        Assert.IsType<NotFoundObjectResult>(result);
+        var nf = Assert.IsType<NotFoundObjectResult>(result);
+        var pd = Assert.IsType<ProblemDetails>(nf.Value);
+        Assert.Equal(404, pd.Status);
+        Assert.Equal("missing", pd.Detail);
     }
 
     [Fact]
-    public async Task CancelReservation_500_ReturnsServerError()
+    public async Task CancelReservation_500_ReturnsServerErrorWithProblemDetails()
     {
         var (controller, svc) = Build();
         var id = Guid.NewGuid();
@@ -225,6 +246,9 @@ public class ReservationControllerTests
 
         var status = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, status.StatusCode);
+        var pd = Assert.IsType<ProblemDetails>(status.Value);
+        Assert.Equal(500, pd.Status);
+        Assert.Equal("boom", pd.Detail);
     }
 
     // ---------- GET /api/reservation/details ----------
@@ -262,11 +286,14 @@ public class ReservationControllerTests
 
         var result = await controller.ReservationDetailsAsync("tok", "a@b.rs");
 
-        Assert.IsType<NotFoundObjectResult>(result);
+        var nf = Assert.IsType<NotFoundObjectResult>(result);
+        var pd = Assert.IsType<ProblemDetails>(nf.Value);
+        Assert.Equal(404, pd.Status);
+        Assert.Equal("missing", pd.Detail);
     }
 
     [Fact]
-    public async Task ReservationDetails_500_ReturnsServerError()
+    public async Task ReservationDetails_500_ReturnsServerErrorWithProblemDetails()
     {
         var (controller, svc) = Build();
         svc.Setup(s => s.GetReservationDetails(It.IsAny<string>(), It.IsAny<string>()))
@@ -276,5 +303,8 @@ public class ReservationControllerTests
 
         var status = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, status.StatusCode);
+        var pd = Assert.IsType<ProblemDetails>(status.Value);
+        Assert.Equal(500, pd.Status);
+        Assert.Equal("boom", pd.Detail);
     }
 }

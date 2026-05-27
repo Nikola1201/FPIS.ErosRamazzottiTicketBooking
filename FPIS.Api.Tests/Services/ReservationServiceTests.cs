@@ -274,7 +274,7 @@ public class ReservationServiceTests
                 It.IsAny<IDictionary<Guid, Zone>>(),
                 It.IsAny<Guid?>()))
             .ReturnsAsync((true, (string?)null));
-        m.CustomerSvc.Setup(c => c.CreateCustomer(It.IsAny<CustomerCreateDTO>())).Returns((Customer?)null);
+        m.CustomerSvc.Setup(c => c.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>())).ReturnsAsync((Customer?)null);
 
         var result = await svc.CreateReservationAsync(new ReservationPostDTO
         {
@@ -299,8 +299,8 @@ public class ReservationServiceTests
                 It.IsAny<IDictionary<Guid, Zone>>(),
                 It.IsAny<Guid?>()))
             .ReturnsAsync((true, (string?)null));
-        m.CustomerSvc.Setup(c => c.CreateCustomer(It.IsAny<CustomerCreateDTO>()))
-            .Returns(new Customer { Id = Guid.NewGuid() });
+        m.CustomerSvc.Setup(c => c.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>()))
+            .ReturnsAsync(new Customer { Id = Guid.NewGuid() });
         m.TicketSvc.Setup(t => t.GenerateTicketsAsync(
                 It.IsAny<IEnumerable<TicketRequest>>(),
                 It.IsAny<Guid>(),
@@ -323,10 +323,13 @@ public class ReservationServiceTests
         Assert.NotNull(result.Value);
         Assert.Equal("mytoken", result.Value!.Token);
         Assert.NotEqual(Guid.Empty, result.Value.ReservationId);
+        m.Uow.Verify(u => u.SaveChangesAsync(), Times.Once);
+        m.Transaction.Verify(t => t.CommitAsync(It.IsAny<CancellationToken>()), Times.Once);
+        m.PromoSvc.Verify(p => p.GeneratePromoCode(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
-    public async Task CreateReservationAsync_WhenExceptionThrown_Returns500()
+    public async Task CreateReservationAsync_WhenExceptionThrown_Returns500AndRollsBack()
     {
         var (svc, m) = Build();
         m.ConcertDateRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ThrowsAsync(new InvalidOperationException("boom"));
@@ -335,6 +338,8 @@ public class ReservationServiceTests
 
         Assert.False(result.IsSuccess);
         Assert.Equal(500, result.ErrorCode);
+        m.Transaction.Verify(t => t.RollbackAsync(It.IsAny<CancellationToken>()), Times.Once);
+        m.Transaction.Verify(t => t.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     // ---------- UpdateReservationAsync ----------
@@ -382,6 +387,27 @@ public class ReservationServiceTests
                 It.IsAny<Expression<Func<Reservation, object>>[]>()))
             .ReturnsAsync(new List<Reservation> { reservation });
         m.ConcertDateRepo.Setup(r => r.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync((ConcertDate?)null);
+
+        var result = await svc.UpdateReservationAsync(new ReservationUpdateDTO
+        {
+            CustomerEmail = "a@b.rs",
+            AccessToken = "tok",
+            Tickets = [new TicketRequest()]
+        });
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(404, result.ErrorCode);
+    }
+
+    [Fact]
+    public async Task UpdateReservationAsync_WhenReservationMissing_Returns404()
+    {
+        var (svc, m) = Build();
+        m.ReservationRepo.Setup(r => r.GetAllAsync(
+                It.IsAny<Expression<Func<Reservation, bool>>?>(),
+                It.IsAny<bool>(),
+                It.IsAny<Expression<Func<Reservation, object>>[]>()))
+            .ReturnsAsync(new List<Reservation>());
 
         var result = await svc.UpdateReservationAsync(new ReservationUpdateDTO
         {
@@ -460,6 +486,64 @@ public class ReservationServiceTests
         Assert.Equal(id, result.Value!.ReservationId);
         Assert.True(result.Value.Cancelled);
         Assert.Equal(ReservationStatus.Cancelled, reservation.Status);
+    }
+
+    [Fact]
+    public async Task CancelReservationAsync_WhenGeneratedPromoIsNull_StillSucceeds()
+    {
+        var (svc, m) = Build();
+        var id = Guid.NewGuid();
+        var reservation = new Reservation
+        {
+            Id = id,
+            Customer = new Customer { Email = "a@b.rs" },
+            AccessToken = new AccessToken { Value = "tok" },
+            Tickets = new List<ReservationTicket>(),
+            Discounts = new List<Discount>(),
+            GeneratedPromoCode = null,
+            UsedPromoCode = null
+        };
+        m.ReservationRepo.Setup(r => r.GetAllAsync(
+                It.IsAny<Expression<Func<Reservation, bool>>?>(),
+                It.IsAny<bool>(),
+                It.IsAny<Expression<Func<Reservation, object>>[]>()))
+            .ReturnsAsync(new List<Reservation> { reservation });
+
+        var result = await svc.CancelReservationAsync(id, "a@b.rs", "tok");
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value!.Cancelled);
+        m.PromoCodeRepo.Verify(r => r.Delete(It.IsAny<PromoCode>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task CancelReservationAsync_WhenUsedPromoCodeSet_RevertsIt()
+    {
+        var (svc, m) = Build();
+        var id = Guid.NewGuid();
+        var used = new PromoCode { Id = Guid.NewGuid(), IsUsed = true, UsedByReservationId = id };
+        var reservation = new Reservation
+        {
+            Id = id,
+            Customer = new Customer { Email = "a@b.rs" },
+            AccessToken = new AccessToken { Value = "tok" },
+            Tickets = new List<ReservationTicket>(),
+            Discounts = new List<Discount>(),
+            GeneratedPromoCode = null,
+            UsedPromoCode = used
+        };
+        m.ReservationRepo.Setup(r => r.GetAllAsync(
+                It.IsAny<Expression<Func<Reservation, bool>>?>(),
+                It.IsAny<bool>(),
+                It.IsAny<Expression<Func<Reservation, object>>[]>()))
+            .ReturnsAsync(new List<Reservation> { reservation });
+
+        var result = await svc.CancelReservationAsync(id, "a@b.rs", "tok");
+
+        Assert.True(result.IsSuccess);
+        Assert.False(used.IsUsed);
+        Assert.Null(used.UsedByReservationId);
+        m.PromoCodeRepo.Verify(r => r.Update(used), Times.Once);
     }
 
     [Fact]

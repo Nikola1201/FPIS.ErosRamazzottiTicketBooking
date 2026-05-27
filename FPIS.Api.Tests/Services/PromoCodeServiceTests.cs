@@ -48,10 +48,13 @@ public class PromoCodeServiceTests
     {
         var (svc, _, repo) = Build();
         repo.Setup(r => r.Update(It.IsAny<PromoCode>())).Throws(new InvalidOperationException("boom"));
-        var promo = new PromoCode { Id = Guid.NewGuid(), Code = "X" };
+        var promo = new PromoCode { Id = Guid.NewGuid(), Code = "X", IsUsed = false };
+        var reservationId = Guid.NewGuid();
 
-        // Should not throw
-        svc.ApplyPromoCode(Guid.NewGuid(), promo);
+        var ex = Record.Exception(() => svc.ApplyPromoCode(reservationId, promo));
+
+        Assert.Null(ex);
+        repo.Verify(r => r.Update(promo), Times.Once);
     }
 
     // ---------- GeneratePromoCode ----------

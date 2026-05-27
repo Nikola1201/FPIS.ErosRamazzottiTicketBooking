@@ -38,9 +38,10 @@ public class CustomerTests
     [Fact]
     public void AllStringProperties_RoundTrip()
     {
+        var id = Guid.NewGuid();
         var customer = new Customer
         {
-            Id = Guid.NewGuid(),
+            Id = id,
             FirstName = "Jovan",
             LastName = "Jovanović",
             Email = "jovan@example.com",
@@ -53,9 +54,17 @@ public class CustomerTests
             PhoneNumber = "+381601234567",
             Company = "ACME"
         };
+        Assert.Equal(id, customer.Id);
         Assert.Equal("Jovan", customer.FirstName);
         Assert.Equal("Jovanović", customer.LastName);
+        Assert.Equal("jovan@example.com", customer.Email);
+        Assert.Equal("jovan@example.com", customer.ConfirmedEmail);
+        Assert.Equal("Glavna 1", customer.Address);
         Assert.Equal("Sprat 3", customer.Address2);
+        Assert.Equal("Beograd", customer.City);
+        Assert.Equal("11000", customer.PostalCode);
+        Assert.Equal("Srbija", customer.Country);
+        Assert.Equal("+381601234567", customer.PhoneNumber);
         Assert.Equal("ACME", customer.Company);
     }
 

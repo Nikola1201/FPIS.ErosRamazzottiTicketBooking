@@ -56,7 +56,8 @@ public class ConcertMappingsTests
     [Fact]
     public void ToReservationPageViewModel_ComposesConcertDatesAndAppSettings()
     {
-        var concertDate = new ConcertDate { Id = Guid.NewGuid(), Date = new DateTime(2026, 6, 1) };
+        var dateId = Guid.NewGuid();
+        var concertDate = new ConcertDate { Id = dateId, Date = new DateTime(2026, 6, 1) };
         var concert = new Concert
         {
             Name = "Tour 2026",
@@ -74,7 +75,23 @@ public class ConcertMappingsTests
 
         Assert.Equal("Tour 2026", vm.Concert!.Title);
         Assert.Single(vm.Dates);
+        Assert.Equal(dateId, vm.Dates[0].Id);
+        Assert.Equal(2, vm.AppSettings.Count);
         Assert.Equal("10", vm.AppSettings["MaxTickets"]);
         Assert.Equal("true", vm.AppSettings["PromoActive"]);
+    }
+
+    [Fact]
+    public void ToReservationPageViewModel_NullDates_ReturnsEmptyDatesList()
+    {
+        var concert = new Concert { Name = "Tour 2026", Dates = null! };
+        var zones = new List<Zone>();
+        var tickets = new List<ReservationTicket>();
+        var appSettings = new List<AppSettings>();
+
+        var vm = concert.ToReservationPageViewModel(zones, tickets, appSettings);
+
+        Assert.NotNull(vm.Dates);
+        Assert.Empty(vm.Dates);
     }
 }

@@ -160,7 +160,8 @@ public class ReservationService : IReservationService
                 }
             }
             var promoCodeRepo = _unitOfWork.Repository<PromoCode>();
-            promoCodeRepo.Delete(generatedPromo);
+            if (generatedPromo != null)
+                promoCodeRepo.Delete(generatedPromo);
             // Revert used promo code if any
             var usedPromoCode = reservation.UsedPromoCode;
             if(usedPromoCode != null)
@@ -229,7 +230,7 @@ public class ReservationService : IReservationService
             }
 
             // Create customer
-            var customer = _customerService.CreateCustomer(payload.Customer);
+            var customer = await _customerService.CreateCustomerAsync(payload.Customer);
             if (customer is null)
                 return Result<ReservationResultDTO>.Failure("Customer with the same email already exists.", 400);
 
@@ -276,6 +277,7 @@ public class ReservationService : IReservationService
         }
         catch (Exception ex)
         {
+            await transaction.RollbackAsync();
             _logger.LogError(ex, "An error occurred while creating reservation.");
             return Result<ReservationResultDTO>.Failure("Internal server error.", 500);
         }
@@ -339,9 +341,10 @@ public class ReservationService : IReservationService
             );
 
             var reservation = reservations.FirstOrDefault();
-            Guid concertDateId = reservation.Tickets.FirstOrDefault()?.ConcertDateId ?? Guid.Empty;
             if (reservation == null)
                 return Result<ReservationUpdateResultDTO>.Failure("Reservation not found or invalid access token.", 404);
+
+            Guid concertDateId = reservation.Tickets.FirstOrDefault()?.ConcertDateId ?? Guid.Empty;
 
             // Check if reservation can be modified
             if (reservation.Status == ReservationStatus.Cancelled)

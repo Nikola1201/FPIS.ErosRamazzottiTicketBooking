@@ -48,7 +48,7 @@ public static class ReservationDetailsMappings
         var finalPrice = tickets.Sum(t => t.Price);
         var zoneViewModels = zones.Select(zone =>
         {
-            var reserved = concertDate.Tickets.Count;
+            var reserved = concertDate?.Tickets?.Count ?? 0;
             return zone.ToViewModel(zone.Capacity - reserved + tickets.Count);
         }).ToList();
 
@@ -61,7 +61,7 @@ public static class ReservationDetailsMappings
             AccessToken = reservation.AccessToken?.Value ?? string.Empty,
             UsedPromoCode = reservation.UsedPromoCode?.Code,
             GeneratedPromoCode = reservation.GeneratedPromoCode?.Code,
-            IsGeneratedPromoCodeUsed = reservation.GeneratedPromoCode.IsUsed,
+            IsGeneratedPromoCodeUsed = reservation.GeneratedPromoCode?.IsUsed ?? false,
             ZonesDetails = zoneViewModels,
             Tickets = tickets,
             Discounts = discounts,

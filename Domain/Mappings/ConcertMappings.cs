@@ -38,9 +38,9 @@ public static class ConcertMappings
         return new ReservationPageViewModel
         {
             Concert= concert.ToViewModel(),
-            Dates = concert.Dates.Select(date =>
+            Dates = concert.Dates?.Select(date =>
                 date.ToViewModel(zones, tickets)
-            ).ToList(),
+            ).ToList() ?? new List<ConcertDateViewModel>(),
             AppSettings = appSettings.ToDictionary(a => a.Key, a => a.Value)
 
         };

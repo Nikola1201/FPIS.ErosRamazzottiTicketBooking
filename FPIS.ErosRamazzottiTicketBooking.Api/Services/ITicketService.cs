@@ -113,7 +113,8 @@ public async Task<(bool IsValid, string? Error)> ValidateZoneCapacitiesAsync(
 
         foreach (var ticket in tickets)
         {
-            var zone = zones[ticket.ZoneId];
+            if (!zones.TryGetValue(ticket.ZoneId, out var zone))
+                throw new InvalidOperationException($"Zone {ticket.ZoneId} not found in zones map.");
             for (int i = 0; i < ticket.Quantity; i++)
             {
                 decimal price = zone.Price;

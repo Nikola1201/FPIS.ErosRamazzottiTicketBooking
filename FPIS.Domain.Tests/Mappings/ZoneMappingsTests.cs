@@ -22,6 +22,8 @@ public class ZoneMappingsTests
     }
 
     [Theory]
+    [InlineData(int.MinValue)]
+    [InlineData(-1)]
     [InlineData(0)]
     [InlineData(int.MaxValue)]
     public void ToViewModel_AcceptsBoundaryCapacityRemaining(int remaining)
@@ -29,5 +31,6 @@ public class ZoneMappingsTests
         var zone = new Zone { Capacity = 100 };
         var vm = zone.ToViewModel(remaining);
         Assert.Equal(remaining, vm.CapacityRemaining);
+        Assert.Equal(100, vm.Capacity);
     }
 }

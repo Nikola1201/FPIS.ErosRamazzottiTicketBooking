@@ -36,7 +36,25 @@ public class TicketServiceTests
             new Dictionary<Guid, Zone>());
 
         Assert.False(isValid);
+        Assert.NotNull(error);
         Assert.Contains("not found", error);
+    }
+
+    [Fact]
+    public async Task GenerateTicketsAsync_WhenZoneMissingFromMap_ThrowsInvalidOperationException()
+    {
+        var (svc, _, _, appSvc) = Build();
+        appSvc.Setup(a => a.GetDiscountSettings()).ReturnsAsync((0, 0, 0, 0));
+        var missingZoneId = Guid.NewGuid();
+        var date = new ConcertDate { Date = DateTime.UtcNow };
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            svc.GenerateTicketsAsync(
+                new[] { new TicketRequest { ZoneId = missingZoneId, Quantity = 1 } },
+                Guid.NewGuid(),
+                new Dictionary<Guid, Zone>(),
+                date,
+                null));
     }
 
     [Fact]

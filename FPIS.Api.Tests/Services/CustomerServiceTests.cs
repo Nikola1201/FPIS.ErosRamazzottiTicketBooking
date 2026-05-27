@@ -33,7 +33,7 @@ public class CustomerServiceTests
     };
 
     [Fact]
-    public void CreateCustomer_WhenEmailUnique_ReturnsNewCustomerWithGuidId()
+    public async Task CreateCustomerAsync_WhenEmailUnique_ReturnsNewCustomerWithGuidId()
     {
         var (svc, _, repo) = Build();
         repo.Setup(r => r.GetAllAsync(
@@ -42,16 +42,16 @@ public class CustomerServiceTests
                 It.IsAny<Expression<Func<Customer, object>>[]>()))
             .ReturnsAsync(new List<Customer>());
 
-        var result = svc.CreateCustomer(MakeDto("new@x.rs"));
+        var result = await svc.CreateCustomerAsync(MakeDto("new@x.rs"));
 
         Assert.NotNull(result);
         Assert.NotEqual(Guid.Empty, result!.Id);
         Assert.Equal("new@x.rs", result.Email);
-        repo.Verify(r => r.AddAsync(It.IsAny<Customer>()), Times.Once);
+        repo.Verify(r => r.AddAsync(result), Times.Once);
     }
 
     [Fact]
-    public void CreateCustomer_WhenEmailExists_ReturnsNull()
+    public async Task CreateCustomerAsync_WhenEmailExists_ReturnsNull()
     {
         var (svc, _, repo) = Build();
         repo.Setup(r => r.GetAllAsync(
@@ -60,14 +60,14 @@ public class CustomerServiceTests
                 It.IsAny<Expression<Func<Customer, object>>[]>()))
             .ReturnsAsync(new List<Customer> { new() { Email = "exists@x.rs" } });
 
-        var result = svc.CreateCustomer(MakeDto("exists@x.rs"));
+        var result = await svc.CreateCustomerAsync(MakeDto("exists@x.rs"));
 
         Assert.Null(result);
         repo.Verify(r => r.AddAsync(It.IsAny<Customer>()), Times.Never);
     }
 
     [Fact]
-    public void CreateCustomer_WhenRepoThrows_ReturnsNull()
+    public async Task CreateCustomerAsync_WhenRepoThrows_ReturnsNull()
     {
         var (svc, _, repo) = Build();
         repo.Setup(r => r.GetAllAsync(
@@ -76,13 +76,13 @@ public class CustomerServiceTests
                 It.IsAny<Expression<Func<Customer, object>>[]>()))
             .ThrowsAsync(new InvalidOperationException("boom"));
 
-        var result = svc.CreateCustomer(MakeDto());
+        var result = await svc.CreateCustomerAsync(MakeDto());
 
         Assert.Null(result);
     }
 
     [Fact]
-    public void CreateCustomer_CopiesAllFieldsFromDto()
+    public async Task CreateCustomerAsync_CopiesAllFieldsFromDto()
     {
         var (svc, _, repo) = Build();
         repo.Setup(r => r.GetAllAsync(
@@ -105,13 +105,19 @@ public class CustomerServiceTests
             Company = "ACME"
         };
 
-        var result = svc.CreateCustomer(dto);
+        var result = await svc.CreateCustomerAsync(dto);
 
         Assert.NotNull(result);
         Assert.Equal("Jovan", result!.FirstName);
         Assert.Equal("Jovanović", result.LastName);
+        Assert.Equal("j@x.rs", result.Email);
+        Assert.Equal("j@x.rs", result.ConfirmedEmail);
+        Assert.Equal("+381601234567", result.PhoneNumber);
         Assert.Equal("Glavna 1", result.Address);
         Assert.Equal("Sprat 3", result.Address2);
+        Assert.Equal("Beograd", result.City);
+        Assert.Equal("11000", result.PostalCode);
+        Assert.Equal("Srbija", result.Country);
         Assert.Equal("ACME", result.Company);
     }
 
