@@ -1,10 +1,19 @@
-﻿using FPIS.Domain.Models;
+using FPIS.Domain.Models;
 using FPIS.Domain.ViewModels;
 
 namespace FPIS.Domain.Mappings;
 
+/// <summary>
+/// Ekstenzije za mapiranje <see cref="Reservation"/> u <see cref="ReservationDetailsViewModel"/>.
+/// </summary>
 public static class ReservationDetailsMappings
 {
+    /// <summary>Mapira rezervaciju u detaljan view model sa kartama, popustima i informacijama o koncertu.</summary>
+    /// <param name="reservation">Rezervacija za mapiranje.</param>
+    /// <param name="concertDate">Datum koncerta na koji se rezervacija odnosi (može biti null).</param>
+    /// <param name="zones">Lista svih zona (za obračun cene i preostalog kapaciteta).</param>
+    /// <param name="allTickets">Lista svih karata (za obračun preostalog kapaciteta).</param>
+    /// <returns>Detaljan view model rezervacije.</returns>
     public static ReservationDetailsViewModel ToReservationDetailsViewModel(
         this Reservation reservation,
         ConcertDate? concertDate,
@@ -35,7 +44,7 @@ public static class ReservationDetailsMappings
             {
                 var zone = zones.FirstOrDefault(z => z.Id == g.Key);
                 return (zone?.Price ?? 0m) * g.Count();
-            }); 
+            });
         var finalPrice = tickets.Sum(t => t.Price);
         var zoneViewModels = zones.Select(zone =>
         {
