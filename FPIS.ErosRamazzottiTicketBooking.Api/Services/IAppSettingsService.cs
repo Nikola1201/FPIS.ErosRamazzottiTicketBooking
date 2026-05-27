@@ -1,28 +1,39 @@
-﻿using FPIS.Domain.Models;
+using FPIS.Domain.Models;
 using FPIS.Infrastructure.Repositories;
 
 namespace FPIS.ErosRamazzottiTicketBooking.Api.Services;
 
+/// <summary>Apstrakcija za rad sa konfiguracionim parametrima aplikacije (<see cref="AppSettings"/>).</summary>
 public interface IAppSettingsService
 {
+    /// <summary>Vraća sve konfiguracione parametre aplikacije kao key/value dictionary.</summary>
+    /// <returns>Dictionary key/value parova.</returns>
     Task<Dictionary<string, string>> GetAppSettingsAsync();
+    /// <summary>Vraća konfiguraciju popusta: procente i broj dana za Early Bird popust.</summary>
+    /// <returns>Tuple sa procentom Early Bird popusta, brojem dana unapred, procentom popusta za petu kartu i procentom promo popusta od prijatelja.</returns>
     Task<(
         int earlyBirdDiscountPercent,
         int earlyBirdDaysBefore,
         int fifthTicketDiscountPercent,
         int friendPromoDiscountPercent)> GetDiscountSettings();
 }
+
+/// <summary>Implementacija <see cref="IAppSettingsService"/> nad <see cref="IUnitOfWork"/>.</summary>
 public class AppSettingsService : IAppSettingsService
 {
     private readonly IUnitOfWork _unitOfwork;
     private readonly ILogger<AppSettingsService> _logger;
 
+    /// <summary>Konstruktor sa <see cref="IUnitOfWork"/> i logger-om.</summary>
+    /// <param name="unitOfWork">Jedinica rada za pristup repozitorijumima.</param>
+    /// <param name="logger">Logger.</param>
     public AppSettingsService(IUnitOfWork unitOfWork, ILogger<AppSettingsService> logger)
     {
         _unitOfwork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     }
+    /// <inheritdoc />
     public async Task<Dictionary<string, string>> GetAppSettingsAsync()
     {
         try
@@ -38,6 +49,7 @@ public class AppSettingsService : IAppSettingsService
         }
     }
 
+    /// <inheritdoc />
     public Task<(int earlyBirdDiscountPercent, int earlyBirdDaysBefore, int fifthTicketDiscountPercent, int friendPromoDiscountPercent)> GetDiscountSettings()
     {
         return GetAppSettingsAsync().ContinueWith(task =>
