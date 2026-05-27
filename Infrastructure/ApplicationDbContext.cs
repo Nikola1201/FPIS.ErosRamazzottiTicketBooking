@@ -1,25 +1,42 @@
-﻿using FPIS.Domain.Models;
+using FPIS.Domain.Models;
 using FPIS.Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace FPIS.Infrastructure;
 
+/// <summary>
+/// EF Core DbContext za FPIS aplikaciju; sadrži DbSet-ove za sve perzistentne entitete i primenjuje entity konfiguracije.
+/// </summary>
 public class ApplicationDbContext : DbContext
 {
+    /// <summary>Inicijalizuje DbContext sa datim opcijama (connection string, provider).</summary>
+    /// <param name="options">EF Core opcije konfigurisane u Program.cs.</param>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
+    /// <summary>Tabela konfiguracionih parametara aplikacije.</summary>
     public DbSet<AppSettings> AppSettings => Set<AppSettings>();
+    /// <summary>Tabela koncerata.</summary>
     public DbSet<Concert> Concerts => Set<Concert>();
+    /// <summary>Tabela datuma koncerata.</summary>
     public DbSet<ConcertDate> ConcertDates => Set<ConcertDate>();
+    /// <summary>Tabela kupaca.</summary>
     public DbSet<Customer> Customers => Set<Customer>();
+    /// <summary>Tabela popusta primenjenih na rezervacije.</summary>
     public DbSet<Discount> Discounts => Set<Discount>();
+    /// <summary>Tabela rezervacija.</summary>
     public DbSet<Reservation> Reservations => Set<Reservation>();
+    /// <summary>Tabela zona (kategorija mesta).</summary>
     public DbSet<Zone> Zones => Set<Zone>();
+    /// <summary>Tabela pristupnih tokena za rezervacije.</summary>
     public DbSet<AccessToken> Tokens => Set<AccessToken>();
+    /// <summary>Tabela promo kodova.</summary>
     public DbSet<PromoCode> PromoCodes => Set<PromoCode>();
+    /// <summary>Tabela karata u rezervacijama.</summary>
     public DbSet<ReservationTicket> ReservationTickets => Set<ReservationTicket>();
+    /// <summary>Primenjuje entity konfiguracije na model i seed-uje početne podatke (zone, koncert, datumi, AppSettings).</summary>
+    /// <param name="modelBuilder">EF Core <see cref="ModelBuilder"/>.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new CustomerEntityTypeConfiguration());

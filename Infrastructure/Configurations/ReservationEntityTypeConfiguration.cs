@@ -1,9 +1,14 @@
-﻿using FPIS.Domain.Models;
+using FPIS.Domain.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// EF Core entity type konfiguracija za <see cref="Reservation"/>: ključ, status, veze ka kupcu, tokenu, promo kodovima, popustima i kartama.
+/// </summary>
 public class ReservationEntityTypeConfiguration : IEntityTypeConfiguration<Reservation>
 {
+    /// <summary>Konfiguriše mapiranje <see cref="Reservation"/> entiteta na bazu.</summary>
+    /// <param name="builder">EF Core builder za <see cref="Reservation"/>.</param>
     public void Configure(EntityTypeBuilder<Reservation> builder)
     {
         builder.HasKey(r => r.Id);
@@ -27,7 +32,7 @@ public class ReservationEntityTypeConfiguration : IEntityTypeConfiguration<Reser
               .WithOne(p => p.UsedByReservation)
               .HasForeignKey<PromoCode>(p => p.UsedByReservationId)
               .OnDelete(DeleteBehavior.Restrict);
-            
+
 
         // Reservation GENERATED a promo code (one-to-one)
         builder.HasOne(r => r.GeneratedPromoCode)
