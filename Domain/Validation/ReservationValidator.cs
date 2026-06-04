@@ -30,7 +30,7 @@ public static class ReservationValidator
                 "AccessToken je obavezan.",
                 new[] { nameof(Reservation.AccessToken) }));
 
-        if (!Enum.IsDefined(typeof(ReservationStatus), reservation.Status))
+        if (!Enum.IsDefined<ReservationStatus>(reservation.Status))
             errors.Add(new ValidationResult(
                 "Status mora biti definisana vrednost iz ReservationStatus.",
                 new[] { nameof(Reservation.Status) }));
