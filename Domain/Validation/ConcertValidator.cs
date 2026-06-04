@@ -11,7 +11,7 @@ public static class ConcertValidator
     /// <summary>Vraća listu grešaka validacije za zadati koncert; prazna lista znači da je model validan.</summary>
     /// <param name="concert">Koncert za validaciju.</param>
     /// <returns>Lista <see cref="ValidationResult"/> grešaka (prazna ako je validan).</returns>
-    /// <exception cref="ArgumentNullException">Bacama ako je <paramref name="concert"/> null.</exception>
+    /// <exception cref="ArgumentNullException">Baca se ako je <paramref name="concert"/> <c>null</c>.</exception>
     public static IReadOnlyList<ValidationResult> Validate(Concert concert)
     {
         ArgumentNullException.ThrowIfNull(concert);
