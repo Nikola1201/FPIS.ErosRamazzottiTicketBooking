@@ -75,7 +75,8 @@ public static class CustomerValidator
                 "Country je obavezan, dužina 1–100 znakova.",
                 new[] { nameof(Customer.Country) }));
 
-        if (customer.PhoneNumber is not null && !PhoneRegex.IsMatch(customer.PhoneNumber))
+        if (customer.PhoneNumber is not null
+            && (string.IsNullOrWhiteSpace(customer.PhoneNumber) || !PhoneRegex.IsMatch(customer.PhoneNumber)))
             errors.Add(new ValidationResult(
                 "PhoneNumber, ako je zadat, mora sadržati 3–30 znakova (cifre, razmak, + ili -).",
                 new[] { nameof(Customer.PhoneNumber) }));

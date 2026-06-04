@@ -210,6 +210,7 @@ public class CustomerValidatorTests
     [InlineData("abcd")]
     [InlineData("12")]
     [InlineData("12345678901234567890123456789012")]
+    [InlineData("   ")]
     public void Validate_PhoneNumberInvalid_ReturnsError(string bad)
     {
         var c = Valid(); c.PhoneNumber = bad;
