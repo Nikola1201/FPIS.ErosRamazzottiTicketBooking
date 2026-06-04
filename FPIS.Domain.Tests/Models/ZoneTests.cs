@@ -26,7 +26,8 @@ public class ZoneTests
     [Fact]
     public void Capacity_AcceptsNegativeValue()
     {
-        // Negative capacity is not validated at the POCO level — invariant check is at service layer.
+        // Negative capacity is not validated at the POCO level (the setter just stores the value).
+        // The actual rejection happens in ZoneValidator — see ZoneValidatorTests.Validate_CapacityZeroOrNegative_ReturnsError.
         var zone = new Zone { Capacity = -1 };
         Assert.Equal(-1, zone.Capacity);
     }
