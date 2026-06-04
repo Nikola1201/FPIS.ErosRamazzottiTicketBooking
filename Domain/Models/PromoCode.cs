@@ -7,7 +7,10 @@ public class PromoCode
 {
     /// <summary>Jedinstveni identifikator promo koda.</summary>
     public Guid Id { get; set; }
-    /// <summary>Tekstualna vrednost promo koda.</summary>
+    /// <summary>
+    /// Tekstualna vrednost promo koda.
+    /// Dozvoljene vrednosti: obavezno, tačno 10 alfanumeričkih znakova (A–Z, a–z, 0–9).
+    /// </summary>
     public string Code { get; set; } = default!;
     /// <summary>Da li je promo kod već iskorišćen.</summary>
     public bool IsUsed { get; set; }
