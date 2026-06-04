@@ -8,8 +8,14 @@ public class AppSettings
 {
     /// <summary>Jedinstveni identifikator stavke.</summary>
     public Guid Id { get; set; }
-    /// <summary>Ključ konfiguracione stavke.</summary>
+    /// <summary>
+    /// Ključ konfiguracione stavke.
+    /// Dozvoljene vrednosti: obavezno, dužina 1–100 znakova.
+    /// </summary>
     public string Key { get; set; } = string.Empty;
-    /// <summary>Vrednost konfiguracione stavke.</summary>
+    /// <summary>
+    /// Vrednost konfiguracione stavke.
+    /// Dozvoljene vrednosti: obavezno, dužina 1–2000 znakova.
+    /// </summary>
     public string Value { get; set; } = string.Empty;
 }
