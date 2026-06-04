@@ -7,9 +7,15 @@ public class Reservation
 {
     /// <summary>Jedinstveni identifikator rezervacije.</summary>
     public Guid Id { get; set; }
-    /// <summary>Navigation property ka kupcu (<see cref="Models.Customer"/>) koji je napravio rezervaciju.</summary>
+    /// <summary>
+    /// Navigation property ka kupcu (<see cref="Models.Customer"/>) koji je napravio rezervaciju.
+    /// Dozvoljene vrednosti: obavezno, ne-null.
+    /// </summary>
     public Customer Customer { get; set; } = default!;
-    /// <summary>Navigation property ka <see cref="Models.AccessToken"/> koji se koristi za pristup rezervaciji.</summary>
+    /// <summary>
+    /// Navigation property ka <see cref="Models.AccessToken"/> koji se koristi za pristup rezervaciji.
+    /// Dozvoljene vrednosti: obavezno, ne-null.
+    /// </summary>
     public AccessToken AccessToken { get; set; } = default!;
     /// <summary>Navigation property ka iskorišćenom promo kodu (opciono).</summary>
     public PromoCode? UsedPromoCode { get; set; }
@@ -19,10 +25,19 @@ public class Reservation
     public PromoCode GeneratedPromoCode { get; set; } = default!;
     /// <summary>Strani ključ ka generisanom <see cref="PromoCode"/> (opciono).</summary>
     public Guid? GeneratedPromoCodeId { get; set; }
-    /// <summary>Trenutni status rezervacije (aktivna, izmenjena, otkazana).</summary>
+    /// <summary>
+    /// Trenutni status rezervacije (aktivna, izmenjena, otkazana).
+    /// Dozvoljene vrednosti: definisana vrednost iz <see cref="ReservationStatus"/>.
+    /// </summary>
     public ReservationStatus Status { get; set; }
-    /// <summary>Navigation property ka kartama (<see cref="ReservationTicket"/>) u rezervaciji.</summary>
+    /// <summary>
+    /// Navigation property ka kartama (<see cref="ReservationTicket"/>) u rezervaciji.
+    /// Dozvoljene vrednosti: ne-null, najmanje jedna karta.
+    /// </summary>
     public ICollection<ReservationTicket> Tickets { get; set; } = [];
-    /// <summary>Navigation property ka popustima (<see cref="Discount"/>) primenjenim na rezervaciju.</summary>
+    /// <summary>
+    /// Navigation property ka popustima (<see cref="Discount"/>) primenjenim na rezervaciju.
+    /// Dozvoljene vrednosti: ne-null (prazna kolekcija je dozvoljena).
+    /// </summary>
     public ICollection<Discount> Discounts { get; set; } = [];
 }
