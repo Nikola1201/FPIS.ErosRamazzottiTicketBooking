@@ -7,16 +7,31 @@ public class Concert
 {
     /// <summary>Jedinstveni identifikator koncerta.</summary>
     public Guid Id { get; set; }
-    /// <summary>Naziv koncerta (npr. "Eros Ramazzotti — Tour 2026").</summary>
+    /// <summary>
+    /// Naziv koncerta (npr. "Eros Ramazzotti — Tour 2026").
+    /// Dozvoljene vrednosti: obavezno, dužina 1–200 znakova.
+    /// </summary>
     public string Name { get; set; } = string.Empty;
-    /// <summary>Grad u kojem se koncert održava.</summary>
+    /// <summary>
+    /// Grad u kojem se koncert održava.
+    /// Dozvoljene vrednosti: obavezno, dužina 1–100 znakova.
+    /// </summary>
     public string City { get; set; } = string.Empty;
-    /// <summary>Naziv lokacije (dvorane, stadiona) gde se koncert održava.</summary>
+    /// <summary>
+    /// Naziv lokacije (dvorane, stadiona) gde se koncert održava.
+    /// Dozvoljene vrednosti: obavezno, dužina 1–200 znakova.
+    /// </summary>
     public string Venue { get; set; } = string.Empty;
-    /// <summary>Adresa lokacije održavanja koncerta.</summary>
+    /// <summary>
+    /// Adresa lokacije održavanja koncerta.
+    /// Dozvoljene vrednosti: obavezno, dužina 1–200 znakova.
+    /// </summary>
     public string Address { get; set; } = string.Empty;
     /// <summary>Navigation property ka listi datuma održavanja koncerta.</summary>
     public ICollection<ConcertDate> Dates { get; set; } = new List<ConcertDate>();
-    /// <summary>Dodatne informacije o koncertu (organizatori, sponzori, napomene).</summary>
+    /// <summary>
+    /// Dodatne informacije o koncertu (organizatori, sponzori, napomene).
+    /// Dozvoljene vrednosti: ne-null, dužina ≤ 2000 znakova (prazan string dozvoljen).
+    /// </summary>
     public string AdditionalInfo { get; set; } = string.Empty;
 }
