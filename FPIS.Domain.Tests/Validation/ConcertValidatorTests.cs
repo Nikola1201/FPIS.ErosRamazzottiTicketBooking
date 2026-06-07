@@ -108,6 +108,14 @@ public class ConcertValidatorTests
     }
 
     [Fact]
+    public void Validate_AdditionalInfoNull_ReturnsError()
+    {
+        var c = Valid(); c.AdditionalInfo = null!;
+        Assert.Contains(ConcertValidator.Validate(c),
+            e => e.MemberNames.Contains(nameof(Concert.AdditionalInfo)));
+    }
+
+    [Fact]
     public void Validate_AdditionalInfoTooLong_ReturnsError()
     {
         var c = Valid(); c.AdditionalInfo = new string('a', 2001);
